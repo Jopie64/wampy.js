@@ -1,15 +1,16 @@
 export class JsonSerializer {
 
+    protocol = 'json';
+    isBinary = true;
+
     constructor () {
-        this.protocol = 'json';
-        this.isBinary = true;
     }
 
-    encode (data) {
+    encode (data: any) {
         return JSON.stringify(data);
     }
 
-    decode (data) {
+    decode (data: string) {
         return new Promise(resolve => {
             resolve(JSON.parse(data));
         });

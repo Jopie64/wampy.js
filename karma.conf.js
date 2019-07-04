@@ -4,19 +4,23 @@ module.exports = function (config) {
 
     config.set({
         basePath: '',
-        frameworks: ['mocha', 'browserify'],
+        frameworks: ['mocha', 'karma-typescript'],
         exclude: [],
         files: [{
             pattern: 'test/!(wampy-crossbar)-test.js',
             watched: false
         }],
         preprocessors: {
-            'test/*-test.js': ['browserify']
+            'src/*.ts': ['karma-typescript'],
+            'src/*.js': ['karma-typescript'],
+            'test/*-test.js': ['karma-typescript']
         },
 
-        browserify: {
-            transform: [['babelify', { 'presets': ['@babel/preset-env'] }]]
+        karmaTypescriptConfig: {
+            tsconfig: "./tsconfig.json",
+            include: ['src/*.ts', 'test/*-test.js']
         },
+
         coverageReporter: {
             dir: 'coverage/',
             reporters: [
@@ -26,7 +30,7 @@ module.exports = function (config) {
             ]
         },
         webpackServer: {noInfo: true},
-        reporters: ['mocha', 'coverage'],
+        reporters: ['mocha', 'coverage', 'karma-typescript'],
         port: 9876,
         colors: true,
         browserNoActivityTimeout: 60000,

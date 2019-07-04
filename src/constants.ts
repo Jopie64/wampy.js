@@ -94,4 +94,6 @@ export const WAMP_ERROR_MSG = {
 
 export const ALLOWED_BINARY_TYPES = ['blob', 'arraybuffer'];
 
+declare var process: any;
+
 export const isNode = (typeof process === 'object' && Object.prototype.toString.call(process) === '[object process]');

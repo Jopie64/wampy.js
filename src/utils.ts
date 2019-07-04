@@ -1,6 +1,13 @@
 import { isNode } from './constants';
+import { NewableWebSocket } from './types';
 
-function getServerUrlBrowser (url) {
+declare var window: {
+    WebSocket?: any,
+    MozWebSocket?: any,
+    location: any
+};
+
+function getServerUrlBrowser (url: string) {
     let scheme, port;
 
     if (/^ws(s)?:\/\//.test(url)) {   // ws scheme is specified
@@ -20,7 +27,7 @@ function getServerUrlBrowser (url) {
     }
 }
 
-function getServerUrlNode (url) {
+function getServerUrlNode (url: string) {
     if (/^ws(s)?:\/\//.test(url)) {   // ws scheme is specified
         return url;
     } else {
@@ -28,7 +35,13 @@ function getServerUrlNode (url) {
     }
 }
 
-export function getWebSocket (url, protocols, ws, headers, requestOptions) {
+export function getWebSocket (
+    url: string,
+    protocols: string[],
+    ws: NewableWebSocket | undefined,
+    headers: {[key: string]: string},
+    requestOptions: any
+): WebSocket | null {
     const parsedUrl = isNode ? getServerUrlNode(url) : getServerUrlBrowser(url);
 
     if (!parsedUrl) {
