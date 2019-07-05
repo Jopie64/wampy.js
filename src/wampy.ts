@@ -1609,18 +1609,20 @@ class Wampy implements IWampy {
      */
     call (topicURI: string,
         payload?: Payload,
-        callbacks?: SuccessCallback | CallCallbacksHash,
+        callbackOrCallbacks?: SuccessCallback | CallCallbacksHash,
         advancedOptions?: CallAdvancedOptions
     ): IWampy {
         let reqId, err = false;
 
-        if (!this._preReqChecks({ topic: topicURI, patternBased: false, allowWAMP: true }, 'dealer', callbacks)) {
+        if (!this._preReqChecks({ topic: topicURI, patternBased: false, allowWAMP: true }, 'dealer', callbackOrCallbacks)) {
             return this;
         }
 
-        if (typeof callbacks === 'function') {
-            callbacks = { onSuccess: callbacks };
-        } else if (!_isPlainObject(callbacks) || typeof (callbacks.onSuccess) === 'undefined') {
+        const callbacks: CallCallbacksHash = typeof callbackOrCallbacks === 'function'
+            ? { onSuccess: callbackOrCallbacks }
+            : callbackOrCallbacks || {};
+
+        if (typeof (callbacks.onSuccess) === 'undefined') {
             this._cache.opStatus = WAMP_ERROR_MSG.NO_CALLBACK_SPEC;
 
             if (_isPlainObject(callbacks) && callbacks.onError) {
@@ -1699,6 +1701,10 @@ class Wampy implements IWampy {
         }
 
         this._send(msg);
+        if (callbacks.onReqId) {
+            callbacks.onReqId(reqId);
+        }
+
         this._cache.opStatus = WAMP_ERROR_MSG.SUCCESS;
         this._cache.opStatus.reqId = reqId;
         return this;

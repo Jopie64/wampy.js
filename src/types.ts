@@ -70,6 +70,7 @@ export interface CallCallbacksHash
 {
     onSuccess?: SuccessCallback;
     onError?: ErrorCallback;
+    onReqId?: (reqId: number) => void;
 }
 
 export interface CancelCallbacksHash
